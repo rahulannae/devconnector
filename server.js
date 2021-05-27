@@ -1,5 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const passport = require('passport');
 
 const configKeys = require('./config/keys');
 const db = configKeys.mongoURI;
@@ -15,6 +17,14 @@ const post = require('./routes/api/post');
 
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+
+const passportConfig = require('./config/passport');
+app.use(passport.initialize());
+passportConfig(passport);
+
 app.get('/', (req, res) => {
     res.send('WORKING again?');
 });
@@ -22,6 +32,7 @@ app.get('/', (req, res) => {
 app.use('/api/user', user);
 app.use('/api/profile', profile);
 app.use('/api/post', post);
+
 
 const port = process.env.PORT || 5000;
 
